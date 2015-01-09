@@ -52,6 +52,11 @@ type ProvisionedThroughputT struct {
 	WriteCapacityUnits     int64
 }
 
+type StreamSpecificationT struct {
+	StreamEnabled  bool
+	StreamViewType StreamViewType
+}
+
 type TableDescriptionT struct {
 	AttributeDefinitions   []AttributeDefinitionT
 	CreationDateTime       float64
@@ -63,6 +68,8 @@ type TableDescriptionT struct {
 	TableName              string
 	TableSizeBytes         int64
 	TableStatus            string
+	LatestStreamId         string
+	StreamSpecification    StreamSpecificationT
 }
 
 type describeTableResponse struct {

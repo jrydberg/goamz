@@ -174,6 +174,13 @@ func (q *UntypedQuery) AddCreateRequestTable(description TableDescriptionT) {
 		})
 	}
 
+	if description.StreamSpecification.StreamEnabled {
+		b["StreamSpecification"] = msi{
+			"StreamEnabled":  description.StreamSpecification.StreamEnabled,
+			"StreamViewType": description.StreamSpecification.StreamViewType,
+		}
+	}
+
 	if len(globalSecondaryIndexes) > 0 {
 		b["GlobalSecondaryIndexes"] = globalSecondaryIndexes
 	}
@@ -182,6 +189,29 @@ func (q *UntypedQuery) AddCreateRequestTable(description TableDescriptionT) {
 func (q *UntypedQuery) AddDeleteRequestTable(description TableDescriptionT) {
 	b := q.buffer
 	b["TableName"] = description.TableName
+}
+
+func (q *UntypedQuery) AddDescribeStreamRequest(streamId string) {
+	b := q.buffer
+	b["StreamId"] = streamId
+}
+
+func (q *UntypedQuery) AddGetShardIteratorRequest(streamId, shardId, shardIteratorType, seqNumber string) {
+	b := q.buffer
+	b["StreamId"] = streamId
+	b["ShardId"] = shardId
+	b["ShardIteratorType"] = shardIteratorType
+	if seqNumber != "" {
+		b["SequenceNumber"] = seqNumber
+	}
+}
+
+func (q *UntypedQuery) AddGetRecordsRequest(shardIterator string, limit int) {
+	b := q.buffer
+	b["ShardIterator"] = shardIterator
+	if limit != 0 {
+		b["Limit"] = int(limit)
+	}
 }
 
 func (q *UntypedQuery) AddKeyConditions(comparisons []AttributeComparison) {
